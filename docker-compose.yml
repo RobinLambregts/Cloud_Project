@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  laravel_app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    restart: unless-stopped
+    image: laravel_app_image
+    environment:
+      - DB_HOST=database
+      - DB_DATABASE=cloudproject
+      - DB_ROOT_PASSWORD=root
+    volumes:
+      - ./laravel_app:/var/www/laravel_app
+    depends_on:
+      - database
+    networks:
+      - myNetwork
+    
+  sports_app:
+    container_name: sports_app
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    build:
+      context: ./app2/
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=database
+      - DB_DATABASE=Sport_db
+      - DB_ROOT_PASSWORD=root
+    volumes:
+      - ./app2:/app2
+    depends_on:
+      - database
+    networks:
+      - myNetwork
+
+  nginx:
+    image: nginx:latest
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80" 
+    volumes:
+      - ./laravel_app/docker/nginx/:/etc/nginx/conf.d
+      - ./:/var/www/laravel_app
+    depends_on:
+      - laravel_app
+    networks:
+      - myNetwork
+
+  database:
+    image: mysql:8.0
+    container_name: laravel_database
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_USER=laravel_user
+      - MYSQL_PASSWORD=laravel_password
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - myNetwork
+
+  adminer:
+    image: adminer:4.8.1-standalone
+    restart: unless-stopped
+    ports:
+      - 9095:8080
+    networks:
+      - myNetwork
+
+networks:
+  myNetwork:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
