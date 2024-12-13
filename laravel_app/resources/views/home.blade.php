@@ -18,7 +18,14 @@
                     sportDiv.style.border = '2px solid red';
                     sportDiv.style.padding = '10px';
                     sportDiv.style.margin = '5px';
-                    sportDiv.textContent = sport; // Assuming each sport object has a 'name' property
+
+                    const sportName = document.createElement('h2');
+                    sportName.innerText = sport[0];
+                    sportDiv.appendChild(sportName);
+
+                    const sportLocation = document.createElement('p');
+                    sportLocation.innerText ="Location: " + sport[1];
+                    sportDiv.appendChild(sportLocation);
                     outputDiv.appendChild(sportDiv);
                 })
             })

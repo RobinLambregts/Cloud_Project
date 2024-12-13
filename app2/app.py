@@ -23,7 +23,7 @@ def get_sports_from_db():
         cursor.execute("SELECT * FROM sporten")  # Adjust the query as per your database schema
         sports = cursor.fetchall()
         conn.close()
-        return [sport[0] for sport in sports]  # Convert list of tuples to a list of strings
+        return sports
     except mysql.connector.Error as err:
         return {"error": f"Database error: {str(err)}"}
 
