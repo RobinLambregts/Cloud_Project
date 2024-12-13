@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, origins='*')
 
 # Function to get sports data from the database
 def get_sports_from_db():
@@ -33,7 +33,7 @@ def get_sports():
     if isinstance(sports, dict) and "error" in sports:
         # Return an error response if the database query failed
         return jsonify(sports), 500
-    return jsonify({"sports": sports})  # Return the list of sports as JSON
+    return jsonify(sports), 200  # Return the list of sports as JSON
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

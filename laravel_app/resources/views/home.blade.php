@@ -1,12 +1,8 @@
 @extends('layouts.app')
 
 <script>
-    function switchToSports() {
-        const output = document.getElementById('output');
-        output.innerHTML = '<p>Loading...</p>';
-        
-        // Use the Fetch API to call the Python backend
-        fetch('http://127.0.0.0:5000/sports')
+    function getSports() {
+        fetch('http://127.0.0.1:5000/sports')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok ' + response.statusText);
@@ -14,13 +10,14 @@
                 return response.json();
             })
             .then(data => {
-                // Update the output div with data from the API
-                document.getElementById('output').innerHTML = 
-                    `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                console.log(data);
+                data.forEach(sport => {
+                    document.getElementById('output').innerHTML += `<p>${sport}</p>`;
+                });
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
-                alert('Failed to fetch sports data.');
+                alert('Staat de Python server aan?');
             });
     }
 </script>
@@ -44,7 +41,7 @@
             </div>
             <div class="m-5 flex-column">
                 <h1>Select your favourite sports!</h1>
-                <button onclick="switchToSports()">GO TO SPORTS</button>
+                <button onclick="getSports()">GO TO SPORTS</button>
                 <div id="output" class="mt-3"></div>
             </div>
         </div>
