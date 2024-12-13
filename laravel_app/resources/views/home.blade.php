@@ -11,9 +11,16 @@
             })
             .then(data => {
                 console.log(data);
+                outputDiv = document.getElementById('output');
+                
                 data.forEach(sport => {
-                    document.getElementById('output').innerHTML += `<p>${sport}</p>`;
-                });
+                    const sportDiv = document.createElement('div');
+                    sportDiv.style.border = '2px solid red';
+                    sportDiv.style.padding = '10px';
+                    sportDiv.style.margin = '5px';
+                    sportDiv.textContent = sport; // Assuming each sport object has a 'name' property
+                    outputDiv.appendChild(sportDiv);
+                })
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
