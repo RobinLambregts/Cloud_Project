@@ -175,6 +175,11 @@
                     </div>
                 @endif
             </div>
+            <div>
+                <h1>
+                    <a href="./kalender">bekijk jouw kalender</a>
+                </h1>
+            </div>
         </div>
     </div>
 </div>

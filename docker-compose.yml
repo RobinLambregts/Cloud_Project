@@ -75,6 +75,17 @@ services:
     networks:
       - myNetwork
 
+  websockets:
+    image: node:14
+    container_name: websockets
+    restart: unless-stopped
+    working_dir: /app
+    command: npm run dev
+    volumes:
+      - ./laravel_app:/app
+    networks:
+      - myNetwork
+
 networks:
   myNetwork:
     driver: bridge
