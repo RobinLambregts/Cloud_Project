@@ -7,10 +7,71 @@ app = Flask(__name__)
 
 CORS(app, origins='*')
 
-# Function to get sports data from the database
+@app.route('/sports/vote/<string:sportName>/<int:vote>', methods=['POST'])
+def vote_sport(sportName, vote):
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv('DB_HOST', 'database'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', 'root'),
+            database=os.getenv('DB_NAME', 'Sport_db')
+        )
+        cursor = conn.cursor()
+
+        print("vote: ", vote)
+        
+        cursor.execute("UPDATE sporten SET stemmen = stemmen + %s WHERE naam=%s", (vote, sportName))
+        conn.commit()
+        
+        conn.close()
+        return jsonify({"message": f"Vote for sport {sportName} updated successfully"}), 200
+    except mysql.connector.Error as err:
+        return jsonify({"error": f"Database error: {str(err)}"}), 500
+
+@app.route('/sports/add/<string:sportName>/<string:sportLocation>/<string:eenheid>', methods=['POST'])
+def add_sport(sportName, sportLocation, eenheid):
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv('DB_HOST', 'database'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', 'root'),
+            database=os.getenv('DB_NAME', 'Sport_db')
+        )
+        cursor = conn.cursor()
+        
+        cursor.execute("INSERT INTO sporten (naam, locatie, eenheid) VALUES (%s, %s, %s)", (sportName, sportLocation, eenheid))
+        conn.commit()
+        
+        conn.close()
+        return jsonify({"message": f"Sport with name {sportName} added successfully"}), 200
+    except mysql.connector.Error as err:
+        return jsonify({"error": f"Database error: {str(err)}"}), 500
+
+@app.route('/sports/remove/<string:sportName>', methods=['DELETE'])
+def delete_sport(sportName):
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv('DB_HOST', 'database'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', 'root'),
+            database=os.getenv('DB_NAME', 'Sport_db')
+        )
+        cursor = conn.cursor()
+        
+        cursor.execute("DELETE FROM sporten WHERE naam=%s", (sportName,))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Sport not found"}), 404
+        
+        conn.close()
+        return jsonify({"message": f"Sport with name {sportName} deleted successfully"}), 200
+    except mysql.connector.Error as err:
+        return jsonify({"error": f"Database error: {str(err)}"}), 500
+
+
 def get_sports_from_db():
     try:
-        # Connect to the MySQL database
         print("connecting...")
         conn = mysql.connector.connect(
             host=os.getenv('DB_HOST', 'database'),  
