@@ -75,14 +75,12 @@ services:
     networks:
       - myNetwork
 
-  websockets:
-    image: node:14
-    container_name: websockets
+  graphql:
+    build: 
+      context: ./graphql/
+      dockerfile: Dockerfile
+    container_name: graphql
     restart: unless-stopped
-    working_dir: /app
-    command: npm run dev
-    volumes:
-      - ./laravel_app:/app
     networks:
       - myNetwork
 

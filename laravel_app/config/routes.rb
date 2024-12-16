@@ -1,0 +1,1 @@
+post "/graphql", to: "graphql#execute"
