@@ -4,17 +4,9 @@
     <meta charset='utf-8' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          selectable: true,
-          dateClick: function(info){
-            alert('Date: ' + info.dateStr);
-          }
-        });
-        calendar.render();
+      const fetchedEvents = [];
 
+      document.addEventListener('DOMContentLoaded', function() {
         const query = `
           query {
             events {
@@ -34,14 +26,14 @@
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
-          body: JSON.stringify({ query })
+          body: JSON.stringify({ query: query })
         })
         .then(r => r.json())
         .then(data => {
           console.log('data returned:', data);
           
           // Format event data for FullCalendar
-          const events = data.data.events.map(event => ({
+          fetchedEvents = data.data.events.map(event => ({
             title: event.title,
             start: `${event.date.year}-${String(event.date.month).padStart(2, '0')}-${String(event.date.day).padStart(2, '0')}`,
           }));
@@ -50,6 +42,19 @@
           calendar.addEventSource(events);
         })
         .catch(error => console.error('Error fetching data:', error));
+
+        console.log('fetchedEvents:', fetchedEvents);
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          events: fetchedEvents,
+          selectable: true,
+          dateClick: function(info){
+            alert('Date: ' + info.dateStr);
+          }
+        });
+        calendar.render();
       });
     </script>
   </head>
