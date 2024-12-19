@@ -4,22 +4,39 @@ require 'json'
 require 'rack/cors'
 require_relative 'types/date_type'
 require_relative 'types/event_type'
-require_relative 'controllers/graphql_controller'
 require_relative 'types/query_type'
 require_relative 'schema'
 
 # Use CORS middleware
 use Rack::Cors do
   allow do
-    origins '*'
-    resource '*', headers: :any, methods: [:get, :post]
+    origins 'http://localhost:8080' # Specify the origin(s) you want to allow
+    resource '*',
+             headers: :any,
+             methods: [:get, :post, :put, :delete, :options, :head],
+             max_age: 600
   end
 end
 
 post '/graphql' do
-  request_payload = JSON.parse(request.body.read)
-  result = MySchema.execute(request_payload['query'])
-  result.to_json
+  begin
+    request_payload = JSON.parse(request.body.read)
+    result = MySchema.execute(
+      request_payload['query'],
+      variables: request_payload['variables'] || {},
+      operation_name: request_payload['operationName']
+    )
+    result.to_json
+  rescue JSON::ParserError => e
+    halt 400, { error: "Invalid JSON: #{e.message}" }.to_json
+  rescue StandardError => e
+    halt 500, { error: "Server Error: #{e.message}" }.to_json
+  end
+end
+
+
+get '/' do
+  'GraphQL server is running'
 end
 
 set :port, 4000

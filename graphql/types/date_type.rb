@@ -1,7 +1,7 @@
 module Types
   class DateType < GraphQL::Schema::Object
-    field :day, Int, null: true
-    field :month, Int, null: true
-    field :year, Int, null: true
+    field :day, Integer, null: false
+    field :month, Integer, null: false
+    field :year, Integer, null: false
   end
 end

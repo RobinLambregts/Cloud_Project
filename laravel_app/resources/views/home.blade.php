@@ -1,13 +1,10 @@
 @extends('layouts.app')
 
 <script>
-    const voted = false;
     const currentUser = @json(Auth::user());
 
-    function voteSport(sport, stem) {
-        upvoteButton = document.getElementById('upvoteButton');
-        voted = true;
-        upvoteButton.style.display = 'none';
+    function voteSport(sport, stem, button) {
+        button.style.display = 'none';
 
         fetch('http://127.0.0.1:5000/sports/vote/' + sport + '/' + stem, {
             method: 'POST',
@@ -31,16 +28,16 @@
     }
 
     function addSport() {
-        if (!sportName || !sportLocation || !eenheid) {
-            alert("All fields are required!");
-            return;
-        }
-
         outputDiv = document.getElementById('output');
         outputDiv.innerHTML = '';
         const sportName = document.getElementById('sportName').value;
         const sportLocation = document.getElementById('sportLocation').value;
         const eenheid = document.getElementById('eenheid').value;
+
+        if (!sportName || !sportLocation || !eenheid) {
+            alert("All fields are required!");
+            return;
+        }
 
         fetch('http://127.0.0.1:5000/sports/add/' + sportName + '/' + sportLocation + '/' + eenheid, {
             method: 'POST',
@@ -97,6 +94,7 @@
             .then(data => {
                 console.log(data);
                 outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = '';
                 
                 data.forEach(sport => {
                     const sportDiv = document.createElement('div');
@@ -125,12 +123,9 @@
 
                     const upvoteButton = document.createElement('button');
                     upvoteButton.id = 'upvoteButton';
-                    if (voted) {
-                        upvoteButton.style.display = 'none';
-                    } else
                     upvoteButton.innerText = 'Upvote';
                     upvoteButton.onclick = function() {
-                        voteSport(sport[0], 1);
+                        voteSport(sport[0], 1, upvoteButton);
                     };
                     sportDiv.appendChild(upvoteButton);
                 })

@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "fullcalendar": "^6.1.15",
-    "graphql": "^16.10.0"
-  },
-  "scripts": {
-    "start": "ruby index.rb"
-  }
-}

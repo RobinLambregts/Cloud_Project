@@ -1,5 +1,8 @@
-module Queries
-  class Query < GraphQL::Schema::Object
+require_relative 'event_type'
+
+module Types
+  class QueryType < GraphQL::Schema::Object
+    
     field :events, [Types::EventType], null: false
 
     def events

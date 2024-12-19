@@ -96,5 +96,9 @@ def get_sports():
         return jsonify(sports), 500
     return jsonify(sports), 200  # Return the list of sports as JSON
 
+@app.route('/')
+def reroute():
+    return "Dit is de sports app, typ /sports achter de url om gegevens te bekijken"
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

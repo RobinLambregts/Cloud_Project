@@ -1,5 +1,5 @@
-module Schema
-  class MySchema < GraphQL::Schema
-    query Queries::Query
-  end
+require_relative 'types/query_type'
+
+class MySchema < GraphQL::Schema
+  query(Types::QueryType)
 end
