@@ -7,6 +7,8 @@ require_relative 'types/event_type'
 require_relative 'types/query_type'
 require_relative 'schema'
 
+$events ||= [] # Global variable to store events
+
 # Use CORS middleware
 use Rack::Cors do
   allow do
