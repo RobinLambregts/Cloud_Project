@@ -13,3 +13,6 @@ Route::get('/kalender', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/day', [App\Http\Controllers\DayController::class, 'show'])->name('day');
+

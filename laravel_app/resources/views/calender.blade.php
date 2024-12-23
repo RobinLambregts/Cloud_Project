@@ -10,7 +10,7 @@
           initialView: 'dayGridMonth',
           selectable: true,
           dateClick: function (info) {
-            alert('Date: ' + info.dateStr);
+            dayClicked(info);
           },
           events: [], // Initialize with an empty array, events will be added later
         });
@@ -129,9 +129,33 @@
         }
       }
 
+      function dayClicked(info) {
+        const selectedDate = info.dateStr;
+
+        function addOneDay(date) {
+            const newDate = new Date(date);
+            newDate.setDate(newDate.getDate() + 1);
+            return newDate;
+        }
+      
+        const eventsForDay = window.calendar.getEvents().filter((event) => {
+            const eventDate = addOneDay(event.start);
+            const eventDateStr = eventDate.toISOString().split('T')[0];
+            return eventDateStr === selectedDate;
+        });
+        const formattedEvents = eventsForDay.map((event) => ({
+            title: event._def.title || 'Untitled Event',
+            date: event.start.toISOString().split('T')[0],
+        }));
+        const eventsParam = encodeURIComponent(JSON.stringify(formattedEvents));
+        window.location.href = `/day?dayInfo=${selectedDate}&events=${eventsParam}`;
+    }
+
+
     </script>
   </head>
   <body>
+    <a href="/home">home</a>
     <div id='calendar'></div>
     @if (Auth::user()->role === 'praesidium')
       <div>
