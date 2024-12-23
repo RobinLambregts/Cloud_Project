@@ -80,10 +80,30 @@ services:
       context: ./graphql/
       dockerfile: Dockerfile
     container_name: graphql
+    environment:
+      - DB_HOST=database
+      - DB_DATABASE=Sport_db
+      - DB_ROOT_PASSWORD=root
     ports:
       - "4000:4000"
     restart: 
       unless-stopped
+    volumes:
+      - ./grpc:/grpc
+    networks:
+      - myNetwork
+
+  grpc:
+    build: 
+      context: ./grpc/
+      dockerfile: Dockerfile
+    container_name: grpc
+    ports:
+      - "7000:7000"
+    restart: 
+      unless-stopped
+    depends_on:
+      - database
     networks:
       - myNetwork
 

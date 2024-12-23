@@ -53,45 +53,82 @@
           })
           .catch((error) => console.error('Network or Parsing Error:', error));
       }
+
+      async function getBestSport() {
+        try {
+          const response = await fetch('http://127.0.0.1:7000');
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+          const data = await response.json();
+          return data; // Assuming the Flask server sends a JSON object with the `best_sport` field
+        } catch (error) {
+          console.error('Error fetching the best sport:', error);
+          alert('Staat de Python server aan?');
+          return null; // Return null or an appropriate fallback value
+        }
+      }
+
+
       
       // ADD EVENT
-      function addEvent() {
+      async function addEvent() {
         const date = document.getElementById('eventDate').value; // Input date (YYYY-MM-DD)
-        const title = 'Best Sport';
+            
+        if (!date) {
+          alert('Please select a valid date.');
+          return;
+        }
       
-        fetch('http://localhost:4000/graphql', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            query: `
-              mutation {
-                addEvent(title: "${title}", date: "${date}") {
-                  title
-                  date {
-                    day
-                    month
-                    year
+        const title = await getBestSport(); // Await the resolved value
+      
+        if (!title) {
+          alert('Failed to fetch the best sport. Please try again.');
+          return;
+        }
+      
+        try {
+          const response = await fetch('http://localhost:4000/graphql', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify({
+              query: `
+                mutation {
+                  addEvent(title: "${title.best_sport}", date: "${date}") {
+                    title
+                    date {
+                      day
+                      month
+                      year
+                    }
                   }
                 }
-              }
-            `,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const event = data?.data?.addEvent;
-            if (event) {
-              console.log('Added event:', event);
-              fetchEvents(window.calendar); // Re-fetch and refresh events after adding a new one
-            } else {
-              console.error('Event field is undefined or empty:', data);
-            }
-          })
-          .catch((error) => console.error('Network or Parsing Error:', error));
+              `,
+            }),
+          });
+        
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+        
+          const data = await response.json();
+          const event = data?.data?.addEvent;
+        
+          if (event) {
+            console.log('Added event:', event);
+            fetchEvents(window.calendar); // Refresh events
+          } else {
+            console.error('Error adding event:', data);
+          }
+        } catch (error) {
+          console.error('Error adding event:', error);
+          alert('Failed to add the event. Please try again.');
+        }
       }
+
     </script>
   </head>
   <body>
@@ -101,6 +138,7 @@
         <input type='date' id='eventDate' />
         <button onclick='addEvent()'>Add Event</button>
       </div>
+      <button onclick="getBestSport()">TEST</button>
     @endif
   </body>
 </html>

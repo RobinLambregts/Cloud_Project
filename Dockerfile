@@ -21,8 +21,6 @@ WORKDIR /var/www/laravel_app
 
 COPY ./laravel_app /var/www/laravel_app
 
-RUN composer install --no-dev --optimize-autoloader
-
 EXPOSE 9000
 
 CMD ["php-fpm"]
