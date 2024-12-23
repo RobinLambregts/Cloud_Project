@@ -74,7 +74,7 @@
       // ADD EVENT
       async function addEvent() {
         const date = document.getElementById('eventDate').value; // Input date (YYYY-MM-DD)
-            
+
         if (!date) {
           alert('Please select a valid date.');
           return;
@@ -138,7 +138,6 @@
         <input type='date' id='eventDate' />
         <button onclick='addEvent()'>Add Event</button>
       </div>
-      <button onclick="getBestSport()">TEST</button>
     @endif
   </body>
 </html>

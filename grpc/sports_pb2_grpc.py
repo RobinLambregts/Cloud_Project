@@ -19,6 +19,11 @@ class SportsServiceStub(object):
                 request_serializer=sports__pb2.EmptyRequest.SerializeToString,
                 response_deserializer=sports__pb2.GetSportsResponse.FromString,
                 )
+        self.RemoveSport = channel.unary_unary(
+                '/SportsService/RemoveSport',
+                request_serializer=sports__pb2.RemoveSportRequest.SerializeToString,
+                response_deserializer=sports__pb2.RemoveSportResponse.FromString,
+                )
 
 
 class SportsServiceServicer(object):
@@ -30,6 +35,13 @@ class SportsServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RemoveSport(self, request, context):
+        """New RPC method for removing a sport
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SportsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -37,6 +49,11 @@ def add_SportsServiceServicer_to_server(servicer, server):
                     servicer.GetSports,
                     request_deserializer=sports__pb2.EmptyRequest.FromString,
                     response_serializer=sports__pb2.GetSportsResponse.SerializeToString,
+            ),
+            'RemoveSport': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveSport,
+                    request_deserializer=sports__pb2.RemoveSportRequest.FromString,
+                    response_serializer=sports__pb2.RemoveSportResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +79,22 @@ class SportsService(object):
         return grpc.experimental.unary_unary(request, target, '/SportsService/GetSports',
             sports__pb2.EmptyRequest.SerializeToString,
             sports__pb2.GetSportsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RemoveSport(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/SportsService/RemoveSport',
+            sports__pb2.RemoveSportRequest.SerializeToString,
+            sports__pb2.RemoveSportResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

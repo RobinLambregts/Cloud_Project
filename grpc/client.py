@@ -26,6 +26,8 @@ def get_best_sport():
 
             if best_sport is None:
                 return jsonify({"message": "No sports available"}), 404
+            
+            remove_response = stub.RemoveSport(sports_pb2.RemoveSportRequest(name=best_sport))
 
             return jsonify({"best_sport": best_sport, "votes": max_votes}), 200
 

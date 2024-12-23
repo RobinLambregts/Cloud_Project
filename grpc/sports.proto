@@ -2,12 +2,22 @@ syntax = "proto3";
 
 service SportsService {
   rpc GetSports (EmptyRequest) returns (GetSportsResponse);
+  rpc RemoveSport (RemoveSportRequest) returns (RemoveSportResponse); // New RPC method for removing a sport
 }
 
 message EmptyRequest {}
 
 message GetSportsResponse {
   repeated Sport sports = 1;
+}
+
+message RemoveSportRequest { // Request for removing a sport
+  string name = 1; // Name of the sport to remove
+}
+
+message RemoveSportResponse { // Response for removing a sport
+  bool success = 1; // Indicates if the operation was successful
+  string message = 2; // Additional information about the operation
 }
 
 message Sport {

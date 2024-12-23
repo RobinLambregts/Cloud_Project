@@ -32,6 +32,24 @@ class SportsService(sports_pb2_grpc.SportsServiceServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
             return sports_pb2.GetSportsResponse()
 
+    def RemoveSport(self, request, context):
+        try:
+            conn = self.get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM sporten WHERE naam = %s", (request.name,))
+            conn.commit()
+            rows_affected = cursor.rowcount
+            conn.close()
+            
+            if rows_affected > 0:
+                return sports_pb2.RemoveSportResponse(success=True, message=f"Sport '{request.name}' removed successfully.")
+            else:
+                return sports_pb2.RemoveSportResponse(success=False, message=f"Sport '{request.name}' not found.")
+        except mysql.connector.Error as err:
+            context.set_details(str(err))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return sports_pb2.RemoveSportResponse(success=False, message="An error occurred while removing the sport.")
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     sports_pb2_grpc.add_SportsServiceServicer_to_server(SportsService(), server)
