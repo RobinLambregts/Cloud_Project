@@ -12,7 +12,7 @@
           dateClick: function (info) {
             dayClicked(info);
           },
-          events: [], // Initialize with an empty array, events will be added later
+          events: [],
         });
       
         calendar.render();
@@ -44,8 +44,15 @@
                 title: event.title,
                 start: `${event.date.year}-${String(event.date.month).padStart(2, '0')}-${String(event.date.day).padStart(2, '0')}`,
               }));
-              calendar.removeAllEventSources(); // Clear existing event sources
-              calendar.addEventSource(formattedEvents); // Add new events
+              calendar.removeAllEventSources();
+              calendar.addEventSource([{
+                title: 'OUDEJAAR', // Dummy event title
+                start: '2024-12-31', // Dummy event date
+              },{
+                title: 'FEESTJE', // Dummy event title
+                start: '2024-12-31', // Dummy event date
+              }]);
+              calendar.addEventSource(formattedEvents);
               console.log('Fetched and added events:', formattedEvents);
             } else {
               console.error('Events field is undefined or empty:', data);

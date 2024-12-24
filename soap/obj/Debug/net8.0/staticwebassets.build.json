@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "ysvESsTAou3gvorCCzuMfc1ediQfHCrWtnKKDfp+wHo=",
+  "Source": "soap",
+  "BasePath": "_content/soap",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

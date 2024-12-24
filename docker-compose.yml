@@ -106,6 +106,19 @@ services:
       - database
     networks:
       - myNetwork
+  
+  soap-service:
+    build:
+      context: ./soap
+      dockerfile: Dockerfile
+    container_name: soap-service
+    restart: unless-stopped
+    ports:
+      - "5299:5299"
+    environment:
+      - ASPNETCORE_URLS=http://+:5299
+    networks:
+      - myNetwork
 
 networks:
   myNetwork:
