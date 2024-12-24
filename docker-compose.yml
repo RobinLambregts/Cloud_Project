@@ -16,6 +16,7 @@ services:
       - ./laravel_app:/var/www/laravel_app
     depends_on:
       - database
+      - mqtt-broker
     networks:
       - myNetwork
     
@@ -117,6 +118,18 @@ services:
       - "5299:5299"
     environment:
       - ASPNETCORE_URLS=http://+:5299
+    networks:
+      - myNetwork
+
+  mqtt-broker:
+    image: eclipse-mosquitto
+    container_name: mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883" # MQTT port
+      - "9001:9001" # WebSocket port
+    volumes:
+      - ./mosquitto/config:/mosquitto/config # Custom configuration
     networks:
       - myNetwork
 

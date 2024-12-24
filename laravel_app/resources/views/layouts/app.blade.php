@@ -12,6 +12,27 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
+        const client = mqtt.connect('ws://localhost:9001');
+            client.on('connect', function () {
+                console.log('MQTT client connected via WebSockets');
+                client.subscribe('events', function (err) {
+                    if (!err) {
+                        console.log('Subscribed to events');
+                    }
+                });
+            });
+
+            client.on('message', function (topic, message) {
+                console.log(`Message received: ${message.toString()} on topic ${topic}`);
+                alert(`${message.toString()}`);
+            });
+
+            client.on('error', function (err) {
+                console.log('Error: ', err);
+            });
+    </script>
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])

@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day Details</title>
-</head>
+@extends('layouts.app')
+
 <script>
     async function schrijfIn(sport) {
         const name = @json(Auth::user()->name); // Laravel haalt de ingelogde gebruiker op
@@ -41,6 +36,7 @@
                 const inschrijflink = document.getElementById('inschrijflink' + sport);
                 inschrijflink.innerHTML = "INGESCHREVEN!";
                 inschrijflink.disabled = true;
+                getInschrijvingen(); // Update the list of registrations
             } else {
                 console.error('SOAP-aanroep mislukt:', response.statusText);
             }
@@ -107,31 +103,47 @@
         return registrations;
     }
 
-// Call the function when the page loads
-window.onload = getInschrijvingen;
-
+    // Call the function when the page loads
+    window.onload = getInschrijvingen;
 
     getInschrijvingen();
 </script>
-<body>
-    <h1>Details for {{ $dayInfo }}</h1>
 
-    <h2>Events:</h2>
-    @if (!empty($events))
-        @foreach ($events as $event)
-        <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px">
-            <h3>{{ $event['title'] }} - {{ $event['date'] }}</h3>
-            <button onclick="schrijfIn('{{ $event['title'] }}')" id="inschrijflink{{ $event['title'] }}">IK DOE MEE!</button>
-            @if (Auth::user()->role == 'praesidium')
-                <h5>Inschrijvingen:</h5>
-                <ul id="outputUl{{ $event['title'] }}" style="margin-bottom: 30px"></ul>
-            @endif
-        </div> 
-        @endforeach
-    @else
-        <p>No events found for this day.</p>
-    @endif
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Dag') }}</div>
+                <div class="card-body">
+                  @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    {{ __('Welkom ') }} {{ Auth::user()->name }}
+                </div>
+            </div>
+                <h1>Details for {{ $dayInfo }}</h1>
 
-    <a href="/kalender">Back to calender</a>
-</body>
-</html>
+                <h2>Events:</h2>
+                @if (!empty($events))
+                    @foreach ($events as $event)
+                    <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px">
+                        <h3>{{ $event['title'] }} - {{ $event['date'] }}</h3>
+                        <button onclick="schrijfIn('{{ $event['title'] }}')" id="inschrijflink{{ $event['title'] }}">IK DOE MEE!</button>
+                        @if (Auth::user()->role == 'praesidium')
+                            <h5>Inschrijvingen:</h5>
+                            <ul id="outputUl{{ $event['title'] }}" style="margin-bottom: 30px"></ul>
+                        @endif
+                    </div> 
+                    @endforeach
+                @else
+                    <p>No events found for this day.</p>
+                @endif
+                
+                <a href="/kalender">Back to calender</a>
+        </div>
+    </div>
+</div>
+@endsection
