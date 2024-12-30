@@ -43,13 +43,6 @@
             start: `${event.date.year}-${String(event.date.month).padStart(2, '0')}-${String(event.date.day).padStart(2, '0')}`,
           }));
           calendar.removeAllEventSources();
-          calendar.addEventSource([{
-            title: 'OUDEJAAR', // Dummy event title
-            start: '2024-12-31', // Dummy event date
-          },{
-            title: 'FEESTJE', // Dummy event title
-            start: '2024-12-31', // Dummy event date
-          }]);
           calendar.addEventSource(formattedEvents);
           console.log('Fetched and added events:', formattedEvents);
         } else {
@@ -132,26 +125,59 @@
       alert('Failed to add the event. Please try again.');
     }
   }
+
   function dayClicked(info) {
-    const selectedDate = info.dateStr;
-    function addOneDay(date) {
-        const newDate = new Date(date);
-        newDate.setDate(newDate.getDate() + 1);
-        return newDate;
-    }
-  
-    const eventsForDay = window.calendar.getEvents().filter((event) => {
-        const eventDate = addOneDay(event.start);
-        const eventDateStr = eventDate.toISOString().split('T')[0];
-        return eventDateStr === selectedDate;
-    });
-    const formattedEvents = eventsForDay.map((event) => ({
-        title: event._def.title || 'Untitled Event',
-        date: event.start.toISOString().split('T')[0],
-    }));
-    const eventsParam = encodeURIComponent(JSON.stringify(formattedEvents));
-    window.location.href = `/day?dayInfo=${selectedDate}&events=${eventsParam}`;
+    const selectedDate = info.dateStr; // Format: YYYY-MM-DD
+    
+    // Fetch events for the selected date from the GraphQL server
+    fetch('http://localhost:4000/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query GetEvents($date: String) {
+            events(date: $date) {
+              title
+              date {
+                day
+                month
+                year
+              }
+            }
+          }
+        `,
+        variables: { date: selectedDate },
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.errors) {
+          console.error('GraphQL Errors:', data.errors);
+          alert('Failed to fetch events. Please try again.');
+          return;
+        }
+      
+        const events = data?.data?.events || [];
+        const formattedEvents = events.map((event) => ({
+          title: event.title,
+          date: `${event.date.year}-${String(event.date.month).padStart(2, '0')}-${String(event.date.day).padStart(2, '0')}`,
+        }));
+        
+        console.log('Events for the selected date:', formattedEvents);
+      
+        // Encode events for URL
+        const eventsParam = encodeURIComponent(JSON.stringify(formattedEvents));
+        window.location.href = `/day?dayInfo=${selectedDate}&events=${eventsParam}`;
+      })
+      .catch((error) => {
+        console.error('Error fetching events for the selected date:', error);
+        alert('Failed to fetch events for the selected date. Please try again.');
+      });
   }
+
 </script>
 
 @section('content')
