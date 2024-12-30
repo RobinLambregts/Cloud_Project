@@ -3,9 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\WeatherService;
 
 class DayController extends Controller
 {
+    protected $weatherService;
+
+    public function __construct(WeatherService $weatherService)
+    {
+        $this->weatherService = $weatherService;
+    }
+
     /**
      * Show the details for the selected day.
      *
@@ -17,18 +25,22 @@ class DayController extends Controller
         // Get the selected date
         $dayInfo = $request->query('dayInfo');
 
-        // Validate the date format
-        if (!\DateTime::createFromFormat('Y-m-d', $dayInfo)) {
-            return redirect()->route('calendar')->withErrors('Invalid date format.');
-        }
-
         // Get the events from the query parameter
         $events = json_decode($request->query('events'), true);
 
-        // Pass the date and events to the view
+        // Get weather forecast for the selected date
+        $weatherForecast = $this->weatherService->getForecast('Diepenbeek', $dayInfo);
+        
+        // Check if the weather forecast is empty
+        if (empty($weatherForecast)) {
+            throw new \Exception('Weather data is empty.');
+        }
+
+        // Pass the date, events, and weather to the view
         return view('day', [
             'dayInfo' => $dayInfo,
             'events' => $events,
+            'weatherForecast' => $weatherForecast,
         ]);
     }
 }

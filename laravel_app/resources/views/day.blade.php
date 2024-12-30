@@ -116,7 +116,7 @@
             <div class="card">
                 <div class="card-header">{{ __('Dag') }}</div>
                 <div class="card-body">
-                  @if (session('status'))
+                    @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
@@ -124,11 +124,31 @@
                     {{ __('Welkom ') }} {{ Auth::user()->name }}
                 </div>
             </div>
-                <h1>Details for {{ $dayInfo }}</h1>
 
-                <h2>Events:</h2>
-                @if (!empty($events))
-                    @foreach ($events as $event)
+            <h1>Details for {{ $dayInfo }}</h1>
+
+            <!-- Weather forecast section -->
+            @if (!empty($weatherForecast))
+            <div style="margin-bottom: 20px; padding: 10px; background: #f0f8ff; border: 1px solid #ddd;">
+                <h2>Weather in Diepenbeek</h2>
+                <div style="display: flex; gap: 20px; width: 100%; overflow-x: auto;">
+                    @foreach ($weatherForecast as $forecast)
+                        <div style="flex: 1 1 200px; padding: 10px; background: #fff; border: 1px solid #ddd; text-align: center;">
+                            <p>{{ date('H:i', strtotime($forecast['dt_txt'])) }}</p>
+                            <p>{{ $forecast['main']['temp'] }}°C</p>
+                            <p>{{ $forecast['weather'][0]['description'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            
+            @else
+                <p>Geen weergegevens beschikbaar voor {{ $dayInfo }}.</p>
+            @endif
+
+            <h2>Events:</h2>
+            @if (!empty($events))
+                @foreach ($events as $event)
                     <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px">
                         <h3>{{ $event['title'] }} - {{ $event['date'] }}</h3>
                         <button onclick="schrijfIn('{{ $event['title'] }}')" id="inschrijflink{{ $event['title'] }}">IK DOE MEE!</button>
@@ -137,12 +157,12 @@
                             <ul id="outputUl{{ $event['title'] }}" style="margin-bottom: 30px"></ul>
                         @endif
                     </div> 
-                    @endforeach
-                @else
-                    <p>No events found for this day.</p>
-                @endif
-                
-                <a href="/kalender">Back to calender</a>
+                @endforeach
+            @else
+                <p>No events found for this day.</p>
+            @endif
+
+            <a href="/kalender">Back to calendar</a>
         </div>
     </div>
 </div>
