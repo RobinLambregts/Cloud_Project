@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 CORS(app, origins='*')
 
+# Deze functie registreert een stem voor een bepaalde sport
 @app.route('/sports/vote/<string:sportName>/<int:vote>', methods=['POST'])
 def vote_sport(sportName, vote):
     try:
@@ -28,6 +29,7 @@ def vote_sport(sportName, vote):
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {str(err)}"}), 500
 
+# Deze functie voegt een nieuwe sport toe aan de database
 @app.route('/sports/add/<string:sportName>/<string:sportLocation>/<string:eenheid>', methods=['POST'])
 def add_sport(sportName, sportLocation, eenheid):
     try:
@@ -47,6 +49,7 @@ def add_sport(sportName, sportLocation, eenheid):
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {str(err)}"}), 500
 
+# Deze functie verwijdert een sport uit de database
 @app.route('/sports/remove/<string:sportName>', methods=['DELETE'])
 def delete_sport(sportName):
     try:
@@ -69,7 +72,7 @@ def delete_sport(sportName):
     except mysql.connector.Error as err:
         return jsonify({"error": f"Database error: {str(err)}"}), 500
 
-
+# Deze functie haalt alle sporten op uit de database
 def get_sports_from_db():
     try:
         print("connecting...")
@@ -81,13 +84,14 @@ def get_sports_from_db():
         )
         print("connection done")
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM sporten")  # Adjust the query as per your database schema
+        cursor.execute("SELECT * FROM sporten")
         sports = cursor.fetchall()
         conn.close()
         return sports
     except mysql.connector.Error as err:
         return {"error": f"Database error: {str(err)}"}
 
+# Deze functie retourneert een lijst van alle sporten in JSON-formaat
 @app.route('/sports', methods=['GET'])
 def get_sports():
     sports = get_sports_from_db()
@@ -96,6 +100,7 @@ def get_sports():
         return jsonify(sports), 500
     return jsonify(sports), 200  # Return the list of sports as JSON
 
+# Deze functie retourneert een welkomstbericht
 @app.route('/')
 def reroute():
     return "Dit is de sports app, typ /sports achter de url om gegevens te bekijken"

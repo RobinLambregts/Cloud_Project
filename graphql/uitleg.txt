@@ -1,0 +1,6 @@
+GRAPHQL
+    - ruby
+    - in docker
+    - input: query of mutation (JSON)
+    - output: JSON
+    - gebruikt in calender.blade.php

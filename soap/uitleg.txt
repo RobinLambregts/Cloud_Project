@@ -1,0 +1,5 @@
+SOAP
+    - C#
+    - in docker
+    - input: XML
+    - output: XML

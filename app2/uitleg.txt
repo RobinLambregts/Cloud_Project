@@ -1,0 +1,11 @@
+REST
+    - python
+    - in docker
+    - input: JSON
+    - output: JSON
+    - request-methods: 
+        -> GET == get_sports_from_db
+        -> POST == add_sport
+        -> PUT == vote_sport
+        -> DELETE == delete_sport
+    - gebruikt in home.blade.php
