@@ -5,5 +5,5 @@ GRPC
 server <-> client
 
 server.py zorgt voor communicatie met db
-client.py zorgt voor communicatie met laravel
+client.py zorgt voor communicatie met laravel (REST)
 (zodat grpc niet in de laravel docker gestoken moest worden en dit nu gewoon met http request kan)

@@ -3,3 +3,4 @@ SOAP
     - in docker
     - input: XML
     - output: XML
+    - gebruikt in day.blade.php

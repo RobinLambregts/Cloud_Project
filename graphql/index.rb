@@ -36,7 +36,6 @@ post '/graphql' do
   end
 end
 
-
 get '/' do
   'GraphQL server is running'
 end
