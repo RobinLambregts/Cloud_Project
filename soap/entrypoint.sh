@@ -2,7 +2,7 @@
 
 # # DEVELOPMENT mode
 echo "RUNNING in development mode"
-tail -f /dev/null
+dotnet soap.dll
 
 # LIVE mode
 # echo "RUNNING in live mode"

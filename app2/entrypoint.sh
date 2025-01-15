@@ -4,7 +4,7 @@ pip3 install --no-cache-dir --break-system-packages -r ./requirements.txt
 
 # # DEVELOPMENT mode
 echo "RUNNING in development mode"
-tail -f /dev/null
+python app.py
 
 # LIVE mode
 # echo "RUNNING in live mode"

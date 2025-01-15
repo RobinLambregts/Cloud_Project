@@ -29,12 +29,7 @@ class DayController extends Controller
         $events = json_decode($request->query('events'), true);
 
         // Get weather forecast for the selected date
-        $weatherForecast = $this->weatherService->getForecast('Diepenbeek', $dayInfo);
-        
-        // Check if the weather forecast is empty
-        if (empty($weatherForecast)) {
-            throw new \Exception('Weather data is empty.');
-        }
+        $weatherForecast = $this->weatherService->getForecast('diepenbeek', $dayInfo);
 
         // Pass the date, events, and weather to the view
         return view('day', [
