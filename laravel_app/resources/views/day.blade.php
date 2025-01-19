@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+<!-- Add Tailwind CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 <script>
     async function schrijfIn(sport) {
         const name = @json(Auth::user()->name); // Laravel haalt de ingelogde gebruiker op
@@ -110,12 +113,12 @@
 </script>
 
 @section('content')
-<div class="container">
+<div class="container mx-auto p-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dag') }}</div>
-                <div class="card-body">
+            <div class="card bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="card-header bg-blue-500 text-white p-4">{{ __('Dag') }}</div>
+                <div class="card-body p-4">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -125,15 +128,15 @@
                 </div>
             </div>
 
-            <h1>Details for {{ $dayInfo }}</h1>
+            <h1 class="text-2xl font-bold my-4">Details for {{ $dayInfo }}</h1>
 
             <!-- Weather forecast section -->
             @if (!empty($weatherForecast))
-            <div style="margin-bottom: 20px; padding: 10px; background: #f0f8ff; border: 1px solid #ddd;">
-                <h2>Weather in Diepenbeek</h2>
-                <div style="display: flex; gap: 20px; width: 100%; overflow-x: auto;">
+            <div class="mb-4 p-4 bg-blue-100 border border-blue-200 rounded">
+                <h2 class="text-xl font-semibold mb-2">Weather in Diepenbeek</h2>
+                <div class="flex gap-4 overflow-x-auto">
                     @foreach ($weatherForecast as $forecast)
-                        <div style="flex: 1 1 200px; padding: 10px; background: #fff; border: 1px solid #ddd; text-align: center;">
+                        <div class="flex-1 p-4 bg-white border border-gray-200 text-center rounded">
                             <p>{{ date('H:i', strtotime($forecast['dt_txt'])) }}</p>
                             <p>{{ $forecast['main']['temp'] }}°C</p>
                             <p>{{ $forecast['weather'][0]['description'] }}</p>
@@ -141,28 +144,25 @@
                     @endforeach
                 </div>
             </div>
-            
             @else
                 <p>Geen weergegevens beschikbaar voor {{ $dayInfo }}.</p>
             @endif
 
-            <h2>Events:</h2>
+            <h2 class="text-xl font-semibold my-4">Events:</h2>
             @if (!empty($events))
                 @foreach ($events as $event)
-                    <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px">
-                        <h3>{{ $event['title'] }} - {{ $event['date'] }}</h3>
-                        <button onclick="schrijfIn('{{ $event['title'] }}')" id="inschrijflink{{ $event['title'] }}">IK DOE MEE!</button>
+                    <div class="border border-gray-300 p-4 mb-4 rounded">
+                        <h3 class="text-lg font-bold">{{ $event['title'] }} - {{ $event['date'] }}</h3>
+                        <button onclick="schrijfIn('{{ $event['title'] }}')" id="inschrijflink{{ $event['title'] }}" class="bg-blue-500 text-white rounded p-2 mt-2">IK DOE MEE!</button>
                         @if (Auth::user()->role == 'praesidium')
-                            <h5>Inschrijvingen:</h5>
-                            <ul id="outputUl{{ $event['title'] }}" style="margin-bottom: 30px"></ul>
+                            <h5 class="text-md font-semibold mt-4">Inschrijvingen:</h5>
+                            <ul id="outputUl{{ $event['title'] }}" class="list-disc pl-5 mb-4"></ul>
                         @endif
                     </div> 
                 @endforeach
             @else
                 <p>No events found for this day.</p>
             @endif
-
-            <a href="/kalender">Back to calendar</a>
         </div>
     </div>
 </div>

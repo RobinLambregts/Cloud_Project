@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+<!-- Add Tailwind CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -11,6 +14,7 @@
         dayClicked(info);
       },
       events: [],
+      eventColor: 'red',
     });
   
     calendar.render();
@@ -181,12 +185,12 @@
 </script>
 
 @section('content')
-<div class="container">
+<div class="container mx-auto p-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Kalender') }}</div>
-                <div class="card-body">
+            <div class="card bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="card-header bg-blue-500 text-white p-4">{{ __('Kalender') }}</div>
+                <div class="card-body p-4">
                   @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -195,12 +199,11 @@
                     {{ __('Welkom ') }} {{ Auth::user()->name }}
                 </div>
             </div>
-                <a href="/home">home</a>
-                <div id='calendar'></div>
+                <div id='calendar' class="mt-4"></div>
                 @if (Auth::user()->role === 'praesidium')
-                  <div>
-                    <input type='date' id='eventDate' />
-                    <button onclick='addEvent()'>Add Event</button>
+                  <div class="mt-4">
+                    <input type='date' id='eventDate' class="border rounded p-2" />
+                    <button onclick='addEvent()' class="bg-blue-500 text-white rounded p-2 ml-2">Add Event</button>
                   </div>
                 @endif
         </div>
